@@ -58,7 +58,8 @@ var g_o3d;
 var g_math;
 var g_pack;
 var g_viewInfo=123;
-var g_eyePosition = [0, 0, 20];
+var g_eyePosition = [0, 0, 20]
+var g_target = [0, 0, 0]
 
 function debug1(s) {
 	document.getElementById("dbg1").innerHTML = s + "<br>";
@@ -79,26 +80,32 @@ function keyPressedCallback(event) {
     switch(keyChar) {
     case '%':					//	left
     	g_eyePosition[0] -= 1
+    	g_target[0] -= 1
         break;
     case "'":					// right
     	g_eyePosition[0] += 1
+    	g_target[0] += 1
         break;
     case '&':					// up (forward)
     	g_eyePosition[2] -= 1
+    	g_target[2] -= 1
         break;
     case '(':					// down (backward)
     	g_eyePosition[2] += 1
+    	g_target[2] += 1
         break;
     case '!':					// page up
     	g_eyePosition[1] += 1
+    	g_target[1] += 1
         break;
     case '"':					// page down
     	g_eyePosition[1] -= 1
+    	g_target[1] -= 1
         break;
     }
     g_viewInfo.drawContext.view = g_math.matrix4.lookAt(
             g_eyePosition,     // eye
-            [0, 0, 0],        // target
+            g_target,        // target
             [0, 1, 0]);    // up
     debug1("key pressed-->" + keyChar + "<--")
 }
@@ -171,7 +178,7 @@ function initContext() {
     // primitives are located.
     g_viewInfo.drawContext.view = g_math.matrix4.lookAt(
             g_eyePosition,     // eye
-            [0, 0, 0],        // target
+            g_target,        // target
             [0, 1, 0]);    // up
 }
 
