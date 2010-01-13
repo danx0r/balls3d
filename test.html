@@ -67,6 +67,29 @@ function debug(s, l) {
 	document.getElementById("dbg" + l).innerHTML = s + "<br>"
 }
 
+// move camera in direction it's looking
+function moveCamera(d) {
+	var dx=Math.sin(g_camAngleY)
+	var dz=Math.cos(g_camAngleY)
+	g_eyePosition[0] -= dx*d
+	g_eyePosition[2] -= dz*d
+	setCamera()
+}
+
+// move camera in direction perpendicular to where it's looking
+function slideCamera(d) {
+	var dx=Math.sin(g_camAngleY+Math.PI*.5)
+	var dz=Math.cos(g_camAngleY+Math.PI*.5)
+	g_eyePosition[0] -= dx*d
+	g_eyePosition[2] -= dz*d
+	setCamera()
+}
+
+// pan camera about Y (up) axis
+function turnCamera(d) {
+	g_camAngleY += d
+}
+
 // compute camera target as offset from eye position given camera angle, and set view
 function setCamera() {
 	var dx=Math.sin(g_camAngleY)
@@ -90,33 +113,33 @@ function keyPressedCallback(event) {
     var mat=g_viewInfo.drawContext.view
     switch(keyChar) {
     case '%':					//	left
-    	g_camAngleY += 0.1
+    	turnCamera(0.05)
         break
     case "'":					// right
-    	g_camAngleY -= 0.1
+    	turnCamera(-0.05)
         break
     case '&':					// up (forward)
-    	g_eyePosition[2] -= 1
-    	g_target[2] -= 1
+    case 'w':
+    	moveCamera(0.4)
         break
     case '(':					// down (backward)
-    	g_eyePosition[2] += 1
-    	g_target[2] += 1
+    case 's':
+    	moveCamera(-0.5)
+        break
+    case 'a':					// up (forward)
+    	slideCamera(0.5)
+        break
+    case 'd':					// down (backward)
+    	slideCamera(-0.5)
         break
     case '!':					// page up
-    	g_eyePosition[1] += 1
-    	g_target[1] += 1
+    	g_eyePosition[1] += 0.5
         break
     case '"':					// page down
-    	g_eyePosition[1] -= 1
-    	g_target[1] -= 1
+    	g_eyePosition[1] -= 0.5
         break
     }
     setCamera()
-//    g_viewInfo.drawContext.view = g_math.matrix4.lookAt(
-//            g_eyePosition,     // eye
-//            g_target,        // target
-//            [0, 1, 0])    // up
     debug("key pressed-->" + keyChar + "<--")
 }
 
