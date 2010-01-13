@@ -46,34 +46,34 @@ Primitives
 <script type="text/javascript" src="o3djs/base.js"></script>
 <script type="text/javascript" id="o3dscript">
 o3djs.require('o3djs.util');
-o3djs.require('o3djs.math');
-o3djs.require('o3djs.rendergraph');
-o3djs.require('o3djs.primitives');
-o3djs.require('o3djs.material');
+o3djs.require('o3djs.math')
+o3djs.require('o3djs.rendergraph')
+o3djs.require('o3djs.primitives')
+o3djs.require('o3djs.material')
 
 // global variables
-var g_o3dElement;
-var g_client;
-var g_o3d;
-var g_math;
-var g_pack;
-var g_viewInfo=123;
+var g_o3dElement
+var g_client
+var g_o3d
+var g_math
+var g_pack
+var g_viewInfo=123
 var g_eyePosition = [0, 0, 20]
 var g_target = [0, 0, 0]
 
 function debug1(s) {
-	document.getElementById("dbg1").innerHTML = s + "<br>";
+	document.getElementById("dbg1").innerHTML = s + "<br>"
 }
 
 function debug2(s) {
-	document.getElementById("dbg2").innerHTML += s + "<br>";
+	document.getElementById("dbg2").innerHTML += s + "<br>"
 }
 
 // like it says
 
 function keyPressedCallback(event) {
     event = event || window.event
-    var keyChar = String.fromCharCode(o3djs.event.getEventKeyChar(event));
+    var keyChar = String.fromCharCode(o3djs.event.getEventKeyChar(event))
 //    alert("  g_eyePosition: " + g_eyePosition)
 //    alert("  g_viewInfo: " + g_viewInfo)
     var mat=g_viewInfo.drawContext.view
@@ -81,32 +81,32 @@ function keyPressedCallback(event) {
     case '%':					//	left
     	g_eyePosition[0] -= 1
     	g_target[0] -= 1
-        break;
+        break
     case "'":					// right
     	g_eyePosition[0] += 1
     	g_target[0] += 1
-        break;
+        break
     case '&':					// up (forward)
     	g_eyePosition[2] -= 1
     	g_target[2] -= 1
-        break;
+        break
     case '(':					// down (backward)
     	g_eyePosition[2] += 1
     	g_target[2] += 1
-        break;
+        break
     case '!':					// page up
     	g_eyePosition[1] += 1
     	g_target[1] += 1
-        break;
+        break
     case '"':					// page down
     	g_eyePosition[1] -= 1
     	g_target[1] -= 1
-        break;
+        break
     }
     g_viewInfo.drawContext.view = g_math.matrix4.lookAt(
             g_eyePosition,     // eye
             g_target,        // target
-            [0, 1, 0]);    // up
+            [0, 1, 0])    // up
     debug1("key pressed-->" + keyChar + "<--")
 }
 
@@ -114,14 +114,14 @@ function keyPressedCallback(event) {
  * Creates the client area.
  */
 function initClient() {
-    window.g_finished = false;    // for selenium testing.
+    window.g_finished = false    // for selenium testing.
 
     // Runs the sample in V8. Comment out this line to run it in the browser
     // JavaScript engine, for example if you want to debug it.
-    o3djs.util.setMainEngine(o3djs.util.Engine.V8);
+    o3djs.util.setMainEngine(o3djs.util.Engine.V8)
 
 	console.log("initClient")
-    o3djs.util.makeClients(main);
+    o3djs.util.makeClients(main)
     console.log("  after, g_viewInfo: " + g_viewInfo)
 }
 
@@ -132,35 +132,35 @@ function initClient() {
  */
 function main(clientElements) {
     // Init global variables.
-    initGlobals(clientElements);
+    initGlobals(clientElements)
 
     // Set up the view and projection transformations.
-    initContext();
+    initContext()
 
     // Add the shapes to the transform heirarchy.
-    createShapes();
+    createShapes()
 
-    window.g_finished = true;    // for selenium testing.
+    window.g_finished = true    // for selenium testing.
 }
 
 /**
  * Initializes global variables and libraries.
  */
 function initGlobals(clientElements) {
-    g_o3dElement = clientElements[0];
-    window.g_client = g_client = g_o3dElement.client;
-    g_o3d = g_o3dElement.o3d;
-    g_math = o3djs.math;
+    g_o3dElement = clientElements[0]
+    window.g_client = g_client = g_o3dElement.client
+    g_o3d = g_o3dElement.o3d
+    g_math = o3djs.math
 
     // Create a pack to manage the objects created.
-    g_pack = g_client.createPack();
+    g_pack = g_client.createPack()
 
     // Create the render graph for a view.
     g_viewInfo = o3djs.rendergraph.createBasicView(
             g_pack,
             g_client.root,
-            g_client.renderGraphRoot);
-    window.document.onkeypress = keyPressedCallback;
+            g_client.renderGraphRoot)
+    window.document.onkeypress = keyPressedCallback
 }
 
 /**
@@ -172,14 +172,14 @@ function initContext() {
             g_math.degToRad(30), // 30 degree frustum.
             g_o3dElement.clientWidth / g_o3dElement.clientHeight, // Aspect ratio.
             1,                                    // Near plane.
-            5000);                            // Far plane.
+            5000)                            // Far plane.
 
     // Set up our view transformation to look towards the world origin where the
     // primitives are located.
     g_viewInfo.drawContext.view = g_math.matrix4.lookAt(
             g_eyePosition,     // eye
             g_target,        // target
-            [0, 1, 0]);    // up
+            [0, 1, 0])    // up
 }
 
 /**
@@ -191,7 +191,7 @@ function initContext() {
  */
 function createMaterial(baseColor) {
     // Create a new, empty Material object.
-    return o3djs.material.createBasicMaterial(g_pack, g_viewInfo, baseColor);
+    return o3djs.material.createBasicMaterial(g_pack, g_viewInfo, baseColor)
 }
 
 /**
@@ -202,14 +202,14 @@ function createShapes() {
     var cube = o3djs.primitives.createCube(
             g_pack,
             createMaterial([0,1,0,1]), // A green phong-shaded material.
-            Math.sqrt(2));                                    // The length of each side of the cube.
+            Math.sqrt(2))                                    // The length of each side of the cube.
 
     var sphere = o3djs.primitives.createSphere(
             g_pack,
             createMaterial([1,0,0,1]),
             1.0,     // Radius of the sphere.
             30,        // Number of meridians.
-            20);        // Number of parallels.
+            20)        // Number of parallels.
 
     var plane = o3djs.primitives.createPlane(
             g_pack,
@@ -217,19 +217,19 @@ function createShapes() {
             10,            // Width.
             10,    // Depth.
             1,            // Horizontal subdivisions.
-            1);         // Vertical subdivisions.
+            1)         // Vertical subdivisions.
 
     // Add the shapes to the transforms.
     var transformTable = [
         {shape: cube, translation: [-3, 1, 0]},
         {shape: sphere, translation: [-1, 1, 0]},
         {shape: plane, translation: [-3, -1, 0]},
-    ];
+    ]
 
     for (var tt = 0; tt < transformTable.length; ++tt) {
-        var transform = g_pack.createObject('Transform');
-        transform.addShape(transformTable[tt].shape);
-        transform.translate(transformTable[tt].translation);
+        var transform = g_pack.createObject('Transform')
+        transform.addShape(transformTable[tt].shape)
+        transform.translate(transformTable[tt].translation)
         transform.parent = g_client.root;
     }
 }
