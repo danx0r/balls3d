@@ -67,6 +67,12 @@ function debug(s, l) {
 	document.getElementById("dbg" + l).innerHTML = s + "<br>"
 }
 
+function debugh(s) {
+	g_debug_http.open("POST", s, true)
+	g_debug_http.send(null)		
+}
+
+
 // move camera in direction it's looking
 function moveCamera(d) {
 	var dx=Math.sin(g_camAngleY)
@@ -140,7 +146,7 @@ function keyPressedCallback(event) {
         break
     }
     setCamera()
-    debug("key pressed-->" + keyChar + "<--")
+    debugh("key pressed-->" + keyChar + "<--")
 }
 
 /**
@@ -148,14 +154,15 @@ function keyPressedCallback(event) {
  */
 function initClient() {
     window.g_finished = false    // for selenium testing.
+	g_debug_http = new XMLHttpRequest()
 
     // Runs the sample in V8. Comment out this line to run it in the browser
     // JavaScript engine, for example if you want to debug it.
     o3djs.util.setMainEngine(o3djs.util.Engine.V8)
 
-	console.log("initClient")
+//	console.log("initClient")
     o3djs.util.makeClients(main)
-    console.log("  after, g_viewInfo: " + g_viewInfo)
+//    console.log("  after, g_viewInfo: " + g_viewInfo)
 }
 
 
@@ -277,7 +284,7 @@ This example shows how to use the primitives utility library to make various
 shapes.    Use arrow keys to navigate
 <br/>
 <!-- Start of O3D plugin -->
-<div id="o3d" style="width: 600px; height: 600px;"></div>
+<div id="o3d" style="width: 600px; height: 480px;"></div>
 <div id="dbg0"></div>
 <div id="dbg1"></div>
 <div id="dbg2"></div>
