@@ -146,7 +146,8 @@ function keyPressedCallback(event) {
         break
     }
     setCamera()
-    debugh("key pressed-->" + keyChar + "<--")
+//    debugh("key pressed-->" + keyChar + "<--")
+	debug("key pressed-->" + keyChar + "<-- code: " + o3djs.event.getEventKeyChar(event) + " shift: "+event.shiftKey,2)
 }
 
 /**
