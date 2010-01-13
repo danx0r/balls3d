@@ -59,18 +59,29 @@ var g_math
 var g_pack
 var g_viewInfo=123
 var g_eyePosition = [0, 0, 20]
-var g_target = [0, 0, 0]
+var g_target = [0, 0, 19]
+var g_camAngleY = 0
 
-function debug1(s) {
-	document.getElementById("dbg1").innerHTML = s + "<br>"
+function debug(s, l) {
+	if (l===undefined) l=0
+	document.getElementById("dbg" + l).innerHTML = s + "<br>"
 }
 
-function debug2(s) {
-	document.getElementById("dbg2").innerHTML += s + "<br>"
+// compute camera target as offset from eye position given camera angle, and set view
+function setCamera() {
+	var dx=Math.sin(g_camAngleY)
+	var dz=Math.cos(g_camAngleY)
+	g_target = g_eyePosition.slice()
+	g_target[0] -= dx
+	g_target[2] -= dz
+    g_viewInfo.drawContext.view = g_math.matrix4.lookAt(
+            g_eyePosition,     // eye
+            g_target,        // target
+            [0, 1, 0])    // up
+	debug("ang: " + g_camAngleY + " eye: " + g_eyePosition + " targ: " + g_target, 1)
 }
 
 // like it says
-
 function keyPressedCallback(event) {
     event = event || window.event
     var keyChar = String.fromCharCode(o3djs.event.getEventKeyChar(event))
@@ -79,12 +90,10 @@ function keyPressedCallback(event) {
     var mat=g_viewInfo.drawContext.view
     switch(keyChar) {
     case '%':					//	left
-    	g_eyePosition[0] -= 1
-    	g_target[0] -= 1
+    	g_camAngleY += 0.1
         break
     case "'":					// right
-    	g_eyePosition[0] += 1
-    	g_target[0] += 1
+    	g_camAngleY -= 0.1
         break
     case '&':					// up (forward)
     	g_eyePosition[2] -= 1
@@ -103,11 +112,12 @@ function keyPressedCallback(event) {
     	g_target[1] -= 1
         break
     }
-    g_viewInfo.drawContext.view = g_math.matrix4.lookAt(
-            g_eyePosition,     // eye
-            g_target,        // target
-            [0, 1, 0])    // up
-    debug1("key pressed-->" + keyChar + "<--")
+    setCamera()
+//    g_viewInfo.drawContext.view = g_math.matrix4.lookAt(
+//            g_eyePosition,     // eye
+//            g_target,        // target
+//            [0, 1, 0])    // up
+    debug("key pressed-->" + keyChar + "<--")
 }
 
 /**
@@ -245,8 +255,12 @@ shapes.    Use arrow keys to navigate
 <br/>
 <!-- Start of O3D plugin -->
 <div id="o3d" style="width: 600px; height: 600px;"></div>
+<div id="dbg0"></div>
 <div id="dbg1"></div>
 <div id="dbg2"></div>
+<div id="dbg3"></div>
+<div id="dbg4"></div>
+<div id="dbg5"></div>
 <!-- End of O3D plugin -->
 </body>
 </html>
