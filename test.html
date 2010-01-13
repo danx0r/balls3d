@@ -77,21 +77,30 @@ function keyPressedCallback(event) {
 //    alert("  g_viewInfo: " + g_viewInfo)
     var mat=g_viewInfo.drawContext.view
     switch(keyChar) {
-        case '%':
+    case '%':					//	left
+    	g_eyePosition[0] -= 1
         break;
-    case "'":
+    case "'":					// right
+    	g_eyePosition[0] += 1
         break;
-    case '&':
+    case '&':					// up (forward)
     	g_eyePosition[2] -= 1
         break;
-    case '(':
+    case '(':					// down (backward)
+    	g_eyePosition[2] += 1
+        break;
+    case '!':					// page up
+    	g_eyePosition[1] += 1
+        break;
+    case '"':					// page down
+    	g_eyePosition[1] -= 1
         break;
     }
     g_viewInfo.drawContext.view = g_math.matrix4.lookAt(
             g_eyePosition,     // eye
             [0, 0, 0],        // target
             [0, 1, 0]);    // up
-    debug2("key pressed-->" + keyChar + "<--")
+    debug1("key pressed-->" + keyChar + "<--")
 }
 
 /**
