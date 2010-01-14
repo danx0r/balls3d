@@ -145,11 +145,16 @@ function keyPressedCallback(event) {
     case '"':					// page down
     	g_eyePosition[1] -= 0.5
         break
+    case '.':					// page down
+		b3d.hello()
+		debug("sphere:-->" + g_transformArray[0].getUpdatedWorldMatrix() + "<--",4)
+		g_transformArray[0].rotateY(0.1)
+		g_transformArray[1].translate([0.1,0,0])
+        break
     }
     setCamera()
 //    debugh("key pressed-->" + keyChar + "<--")
 	debug("key pressed-->" + keyChar + "<-- code: " + o3djs.event.getEventKeyChar(event) + " shift: "+event.shiftKey,2)
-	b3d.hello()
 }
 
 /**
@@ -246,13 +251,14 @@ function createShapes() {
             g_pack,
             createMaterial([0,1,0,1]), // A green phong-shaded material.
             Math.sqrt(2))                                    // The length of each side of the cube.
-
+	g_cube = cube
     var sphere = o3djs.primitives.createSphere(
             g_pack,
             createMaterial([1,0,0,1]),
-            0.1,     // Radius of the sphere.
+            0.33,     // Radius of the sphere.
             30,        // Number of meridians.
             20)        // Number of parallels.
+	g_sphere=sphere
 
     var plane = o3djs.primitives.createPlane(
             g_pack,
@@ -269,11 +275,13 @@ function createShapes() {
         {shape: plane, translation: [-3, -1, 0]},
     ]
 
+	g_transformArray=[0,0,0]
     for (var tt = 0; tt < transformTable.length; ++tt) {
         var transform = g_pack.createObject('Transform')
         transform.addShape(transformTable[tt].shape)
         transform.translate(transformTable[tt].translation)
         transform.parent = g_client.root;
+		g_transformArray[tt]=transform
     }
 }
 
