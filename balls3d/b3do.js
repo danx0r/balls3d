@@ -61,8 +61,10 @@ function setCamera() {
 
 b3do.world = function (gravity, timestep, ground) {
     // Init global variables.
-	this.world = new b3d.world(gravity, timestep, ground)
+	debug("g_pack: " + g_pack)
 	this.pack = g_pack
+
+	this.world = new b3d.world(gravity, timestep, ground)
 
 	this.addDBall = function(size, pos, ori, nom, shape) {
 		///	if no o3d primitive specified, create one:
@@ -98,11 +100,26 @@ b3do.world = function (gravity, timestep, ground) {
 	}
 }
 
+// main entry point:
+b3do.run = function(cb) {
+	g_cb = cb
+    window.g_finished = false    // for selenium testing.
+	g_debug_http = new XMLHttpRequest()
+
+    // Runs the sample in V8. Comment out this line to run it in the browser
+    // JavaScript engine, for example if you want to debug it.
+    o3djs.util.setMainEngine(o3djs.util.Engine.V8)
+
+	debug("calling makeClients")
+    o3djs.util.makeClients(b3do_main)
+	debug("returned from makeClients")
+}
+
 /**
  * Initializes global variables, positions camera, draws shapes.
  * @param {Array} clientElements Array of o3d object elements.
  */
-function main(clientElements) {
+function b3do_main(clientElements) {
 
     initGlobals(clientElements)
 
@@ -111,27 +128,9 @@ function main(clientElements) {
 
     // Add the shapes to the transform heirarchy.
     createShapes()
-
-	g_world = new b3do.world(-10.0,0.01,0,g_pack)
-	g_world.addDBall(.5, [0,2,0], [0,0,0,1])
-	debug("g_world: " + g_world + " gravity: " + g_world.world.gravity,1)
-	debug("dynamics[0].pos: " + g_world.world.dynamics[0],3)
+	
+	g_cb()
 }
-
-/**
- * Creates the client area.
- */
-function initClient() {
-    window.g_finished = false    // for selenium testing.
-	g_debug_http = new XMLHttpRequest()
-
-    // Runs the sample in V8. Comment out this line to run it in the browser
-    // JavaScript engine, for example if you want to debug it.
-    o3djs.util.setMainEngine(o3djs.util.Engine.V8)
-
-    o3djs.util.makeClients(main)
-}
-
 
 /**
  * Initializes global variables and libraries.
@@ -144,7 +143,7 @@ function initGlobals(clientElements) {
 
     // Create a pack to manage the objects created.
     g_pack = g_client.createPack()
-
+	debug("initGlobals g_pack: " + g_pack)
     // Create the render graph for a view.
     g_viewInfo = o3djs.rendergraph.createBasicView(
             g_pack,
