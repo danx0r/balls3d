@@ -60,7 +60,7 @@ b3d.world = function (gravity, timestep, ground) {
 	this.addDBall = function(size, pos, ori, nom) {
 		if (nom===undefined) nom="ball" + this.statics.length
 		this.dynamics.push(new b3d.dBall(size, pos, ori, nom)) 
-		debug("debug A: " + this.dynamics[0].pos,5)
+		debug("debug A: " + pos + "|" + this.dynamics[0].pos)
 	}
 
 }
