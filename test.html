@@ -1,47 +1,10 @@
-<!--
-Copyright 2009, Google Inc.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-        * Redistributions of source code must retain the above copyright
-notice, this list of conditions and the following disclaimer.
-        * Redistributions in binary form must reproduce the above
-copyright notice, this list of conditions and the following disclaimer
-in the documentation and/or other materials provided with the
-distribution.
-        * Neither the name of Google Inc. nor the names of its
-contributors may be used to endorse or promote products derived from
-this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
--->
-
-<!--
-O3D Primitives
-
-This sample shows how to use the functions in the primitives utility library
-to make various shapes.
--->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>
-Primitives
+Balls 3D
 </title>
 <script type="text/javascript" src="o3djs/base.js"></script>
 <script type="text/javascript" src="balls3d/b3d.js"></script>
@@ -108,7 +71,7 @@ function setCamera() {
             g_eyePosition,     // eye
             g_target,        // target
             [0, 1, 0])    // up
-	debug("ang: " + g_camAngleY + " eye: " + g_eyePosition + " targ: " + g_target, 1)
+	debug("ang: " + g_camAngleY + " eye: " + g_eyePosition + " targ: " + g_target, 0)
 }
 
 // like it says
@@ -146,15 +109,17 @@ function keyPressedCallback(event) {
     	g_eyePosition[1] -= 0.5
         break
     case '.':					// page down
-		b3d.hello()
-		debug("sphere:-->" + g_transformArray[0].getUpdatedWorldMatrix() + "<--",4)
 		g_transformArray[0].rotateY(0.1)
-		g_transformArray[1].translate([0.1,0,0])
+		g_world.step()
+		g_transformArray[1].identity()
+		g_transformArray[1].translate(g_world.dynamics[0].pos)
+		debug("cube:-->" + g_transformArray[0].getUpdatedWorldMatrix() + "<--",2)
+		debug("sphere:-->" + g_transformArray[1].getUpdatedWorldMatrix() + "<--",3)
         break
     }
     setCamera()
 //    debugh("key pressed-->" + keyChar + "<--")
-	debug("key pressed-->" + keyChar + "<-- code: " + o3djs.event.getEventKeyChar(event) + " shift: "+event.shiftKey,2)
+	debug("key pressed-->" + keyChar + "<-- code: " + o3djs.event.getEventKeyChar(event) + " shift: "+event.shiftKey,1)
 }
 
 /**
@@ -187,8 +152,10 @@ function main(clientElements) {
 
     // Add the shapes to the transform heirarchy.
     createShapes()
-
-    window.g_finished = true    // for selenium testing.
+	g_world = new b3d.world(-10.0)
+	g_world.addDBall(1, [0,3,0], [0,0,0,1])
+	debug("g_world: " + g_world + " gravity: " + g_world.gravity,1)
+	debug("dynamics[0].pos: " + g_world.dynamics[0],3)
 }
 
 /**
@@ -255,7 +222,7 @@ function createShapes() {
     var sphere = o3djs.primitives.createSphere(
             g_pack,
             createMaterial([1,0,0,1]),
-            0.33,     // Radius of the sphere.
+            0.5,     // Radius of the sphere.
             30,        // Number of meridians.
             20)        // Number of parallels.
 	g_sphere=sphere
@@ -271,8 +238,8 @@ function createShapes() {
     // Add the shapes to the transforms.
     var transformTable = [
         {shape: cube, translation: [-3, 1, 0]},
-        {shape: sphere, translation: [-1, 1, 0]},
-        {shape: plane, translation: [-3, -1, 0]},
+        {shape: sphere, translation: [0, 3, 0]},
+        {shape: plane, translation: [0, -.5, 0]},
     ]
 
 	g_transformArray=[0,0,0]
@@ -289,10 +256,9 @@ function createShapes() {
 </script>
 </head>
 <body onload="initClient()">
-<h1>Primitives</h1>
+<h3>Balls 3D Physics Engine</h3>
 
-This example shows how to use the primitives utility library to make various
-shapes.    Use arrow keys to navigate
+Use arrow keys to navigate; pg up/dn; period
 <br/>
 <!-- Start of O3D plugin -->
 <div id="o3d" style="width: 600px; height: 480px;"></div>
@@ -302,6 +268,7 @@ shapes.    Use arrow keys to navigate
 <div id="dbg3"></div>
 <div id="dbg4"></div>
 <div id="dbg5"></div>
+<div id="dbg6"></div>
 <!-- End of O3D plugin -->
 </body>
 </html>
