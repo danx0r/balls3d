@@ -21,6 +21,8 @@ b3do.world = function (gravity, timestep, ground, pack) {
 
 	this.addDBall = function(size, pos, ori, nom, shape) {
 		///	if no o3d primitive specified, create one:
+		this.world.addDBall(size, pos, ori, nom)
+		ball = this.world.dynamics[this.world.dynamics.length-1]	///	get the ball we just made
 		if (shape==undefined) {
 			debug("g_viewInfo: " + window.g_viewInfo,4)
 			this.shape = o3djs.primitives.createSphere(
@@ -30,7 +32,11 @@ b3do.world = function (gravity, timestep, ground, pack) {
             	30,        // Number of meridians.
             	20)
 		}
-		this.world.addDBall(size, pos, ori, nom)
+        ball.o3d_transform = this.pack.createObject('Transform')
+        ball.o3d_transform.addShape(this.shape)
+        ball.o3d_transform.translate(pos)
+		///	need to do rotation
+        ball.o3d_transform.parent = g_client.root;
 	}
 	
 	this.step = function(steps) {
@@ -38,8 +44,11 @@ b3do.world = function (gravity, timestep, ground, pack) {
 		for (var j = 0; j < this.world.dynamics.length; j++) {
 			obj = this.world.dynamics[j]
 			debug("debug B: " + obj.pos)
-			window.g_transformArray[1].identity()
-			window.g_transformArray[1].translate(obj.pos)
+//			window.g_transformArray[1].identity()
+//			window.g_transformArray[1].translate(obj.pos)
+			obj.o3d_transform.identity()
+			obj.o3d_transform.translate(obj.pos)
+			/// FIXME: orientation!
 		}
 	}
 }

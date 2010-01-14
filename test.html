@@ -159,7 +159,7 @@ function main(clientElements) {
     createShapes()
 	//temp = new b3do.world()
 	g_world = new b3do.world(-10.0,0.01,0,g_pack)
-	g_world.addDBall(1, [0,2,0], [0,0,0,1])
+	g_world.addDBall(.5, [0,2,0], [0,0,0,1])
 	debug("g_world: " + g_world + " gravity: " + g_world.world.gravity,1)
 	debug("dynamics[0].pos: " + g_world.world.dynamics[0],3)
 }
@@ -245,7 +245,7 @@ function createShapes() {
     // Add the shapes to the transforms.
     var transformTable = [
         {shape: cube, translation: [-3, 1, 0]},
-        {shape: sphere, translation: [0, 3, 0]},
+     //   {shape: sphere, translation: [0, 3, 0]},
         {shape: plane, translation: [0, -.5, 0]},
     ]
 
