@@ -127,7 +127,7 @@ function b3do_main(clientElements) {
     initContext()
 
     // Add the shapes to the transform heirarchy.
-    createShapes()
+//    createShapes()
 	
 	g_cb()
 }

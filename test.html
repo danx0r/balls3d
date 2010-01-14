@@ -65,12 +65,7 @@ function keyPressedCallback(event) {
     	g_eyePosition[1] -= 0.5
         break
     case '.':					// page down
-		g_transformArray[0].rotateY(0.1)
 		g_world.step()
-		//g_transformArray[1].identity()
-		//g_transformArray[1].translate(g_world.dynamics[0].pos)
-		debug("cube:-->" + g_transformArray[0].getUpdatedWorldMatrix() + "<--",2)
-		debug("sphere:-->" + g_transformArray[1].getUpdatedWorldMatrix() + "<--",3)
         break
     }
     setCamera()
