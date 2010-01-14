@@ -117,16 +117,19 @@ b3do.world = function(gravity, timestep, ground){
 // main entry point:
 b3do.run = function(cb) {
 	g_cb = cb
-    window.g_finished = false    // for selenium testing.
 	g_debug_http = new XMLHttpRequest()
 
     // Runs the sample in V8. Comment out this line to run it in the browser
     // JavaScript engine, for example if you want to debug it.
     o3djs.util.setMainEngine(o3djs.util.Engine.V8)
 
-	debug("calling makeClients")
     o3djs.util.makeClients(b3do_main)
-	debug("returned from makeClients")
+	g_client.setRenderCallback(onrender)
+}
+bugg=0
+function onrender(ev) {
+	bugg++
+	debug("onrender: "+bugg,0)
 }
 
 /**
