@@ -22,7 +22,7 @@ var g_client
 var g_o3d
 var g_math
 var g_pack
-var g_viewInfo=123
+var g_viewInfo
 var g_eyePosition = [0, 0, 20]
 var g_target = [0, 0, 19]
 var g_camAngleY = 0
@@ -111,9 +111,9 @@ function keyPressedCallback(event) {
         break
     case '.':					// page down
 		g_transformArray[0].rotateY(0.1)
-		g_world.step()
-		g_transformArray[1].identity()
-		g_transformArray[1].translate(g_world.dynamics[0].pos)
+		//g_world.step()
+		//g_transformArray[1].identity()
+		//g_transformArray[1].translate(g_world.dynamics[0].pos)
 		debug("cube:-->" + g_transformArray[0].getUpdatedWorldMatrix() + "<--",2)
 		debug("sphere:-->" + g_transformArray[1].getUpdatedWorldMatrix() + "<--",3)
         break
@@ -153,11 +153,11 @@ function main(clientElements) {
 
     // Add the shapes to the transform heirarchy.
     createShapes()
-//	temp = new b3do.world()
-	g_world = new b3d.world(-10.0,0.01,0)
+	//temp = new b3do.world()
+	g_world = new b3do.world(-10.0,0.01,0,g_pack)
 	g_world.addDBall(1, [0,3,0], [0,0,0,1])
-	debug("g_world: " + g_world + " gravity: " + g_world.gravity,1)
-	debug("dynamics[0].pos: " + g_world.dynamics[0],3)
+	debug("g_world: " + g_world + " gravity: " + g_world.world.gravity,1)
+	debug("dynamics[0].pos: " + g_world.world.dynamics[0],3)
 }
 
 /**
@@ -178,6 +178,7 @@ function initGlobals(clientElements) {
             g_client.root,
             g_client.renderGraphRoot)
     window.document.onkeypress = keyPressedCallback
+	window.g_viewInfo = g_viewInfo
 }
 
 /**
