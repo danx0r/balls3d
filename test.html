@@ -44,6 +44,7 @@ to make various shapes.
 Primitives
 </title>
 <script type="text/javascript" src="o3djs/base.js"></script>
+<script type="text/javascript" src="balls3d/b3d.js"></script>
 <script type="text/javascript" id="o3dscript">
 o3djs.require('o3djs.util');
 o3djs.require('o3djs.math')
@@ -148,6 +149,7 @@ function keyPressedCallback(event) {
     setCamera()
 //    debugh("key pressed-->" + keyChar + "<--")
 	debug("key pressed-->" + keyChar + "<-- code: " + o3djs.event.getEventKeyChar(event) + " shift: "+event.shiftKey,2)
+	b3d.hello()
 }
 
 /**
@@ -248,7 +250,7 @@ function createShapes() {
     var sphere = o3djs.primitives.createSphere(
             g_pack,
             createMaterial([1,0,0,1]),
-            1.0,     // Radius of the sphere.
+            0.1,     // Radius of the sphere.
             30,        // Number of meridians.
             20)        // Number of parallels.
 
