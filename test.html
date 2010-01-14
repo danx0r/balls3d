@@ -65,7 +65,7 @@ function keyPressedCallback(event) {
     	g_eyePosition[1] -= 0.5
         break
     case '.':					// page down
-    	if (g_world.running)
+    	if (g_world.is_running())
 			g_world.pause()
 		else
 			g_world.start()

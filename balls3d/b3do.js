@@ -80,14 +80,10 @@ b3do.world = function(gravity, timestep, ground){
 	transform.translate([0,ground,0])
 	transform.parent = g_client.root;
 
-	this.start = function () {
-		this.running = true
-	}
+	this.start = function () {this.running = true}
+	this.pause = function () {this.running = false}
+	this.is_running = function () {return this.running}
 	
-	this.pause = function () {
-		this.running = false
-	}
-		
 	this.addDBall = function(size, pos, ori, nom, shape){
 		///	if no o3d primitive specified, create one:
 		this.world.addDBall(size, pos, ori, nom)
