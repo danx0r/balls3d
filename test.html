@@ -8,6 +8,7 @@ Balls 3D
 </title>
 <script type="text/javascript" src="o3djs/base.js"></script>
 <script type="text/javascript" src="balls3d/b3d.js"></script>
+<script type="text/javascript" src="balls3d/b3do.js"></script>
 <script type="text/javascript" id="o3dscript">
 o3djs.require('o3djs.util');
 o3djs.require('o3djs.math')
@@ -152,7 +153,8 @@ function main(clientElements) {
 
     // Add the shapes to the transform heirarchy.
     createShapes()
-	g_world = new b3d.world(-10.0)
+//	temp = new b3do.world()
+	g_world = new b3d.world(-10.0,0.01,0)
 	g_world.addDBall(1, [0,3,0], [0,0,0,1])
 	debug("g_world: " + g_world + " gravity: " + g_world.gravity,1)
 	debug("dynamics[0].pos: " + g_world.dynamics[0],3)

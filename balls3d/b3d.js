@@ -44,7 +44,7 @@ b3d.world = function (gravity, timestep, ground) {
 		for(var i=0; i<steps; i++) {
 			for(var j=0; j<this.dynamics.length; j++) {
 				obj = this.dynamics[j]
-				alert("stepping " + obj.name)
+				debug("stepping " + obj.name,6)
 				if (obj.pos[1] > this.ground) {
 					obj.pos[1] += this.gravity * this.timestep
 				}
