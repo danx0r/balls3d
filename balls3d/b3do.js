@@ -104,10 +104,18 @@ b3do.world = function(gravity, timestep, ground){
 		///	need to do rotation
 		ball.o3d_transform.parent = g_client.root;
 	}
-	
-	this.step = function(steps){
+
+	this.actualTime = 0.0
+	this.steppedTime = 0.0
+	this.step = function(elapsed){
 		if (this.running) {
-			this.world.step(steps)
+			var stepsTaken = 0
+			this.actualTime += elapsed
+			while (this.steppedTime+this.world.timestep < this.actualTime) {
+				this.world.step()
+				this.steppedTime += this.world.timestep
+				stepsTaken++
+			}
 			for (var j = 0; j < this.world.dynamics.length; j++) {
 				obj = this.world.dynamics[j]
 				//			window.g_transformArray[1].identity()
@@ -116,6 +124,7 @@ b3do.world = function(gravity, timestep, ground){
 				obj.o3d_transform.translate(obj.pos)
 			/// FIXME: orientation!
 			}
+			//debug("step elapsed: "+elapsed+" actual: "+this.actualTime+" stepped: "+this.steppedTime+" steps: "+stepsTaken)
 		}
 	}
 	// add us to the worlds to render
@@ -138,9 +147,9 @@ g_rendered_frames=0
 g_worlds=[]
 function onrender(ev) {
 	g_rendered_frames++
-	debug("onrender frame: "+g_rendered_frames,5)
+	debug("onrender frame: "+g_rendered_frames + " elapsed: " + ev.elapsedTime,5)
 	for(var i in g_worlds) {
-		g_worlds[i].step()
+		g_worlds[i].step(ev.elapsedTime)
 	}
 }
 
