@@ -15,8 +15,8 @@ var g_o3d
 var g_math
 var g_pack
 var g_viewInfo
-var g_eyePosition = [0, 0, 20]
-var g_target = [0, 0, 19]
+var g_eyePosition = [0, 3, 20]
+var g_target = [0, 3, 19]
 var g_camAngleY = 0
 
 
@@ -59,40 +59,54 @@ function setCamera() {
 
 /// right now I'm doing this stupidly as I don't really get prototype inheritance
 
-b3do.world = function (gravity, timestep, ground) {
-    // Init global variables.
+b3do.world = function(gravity, timestep, ground){
+	// Init global variables.
 	debug("g_pack: " + g_pack)
 	this.pack = g_pack
-
+	
 	this.world = new b3d.world(gravity, timestep, ground)
 
-	this.addDBall = function(size, pos, ori, nom, shape) {
+	///	create a gound plane	
+	var groundplane = o3djs.primitives.createPlane(
+		this.pack, 
+		o3djs.material.createBasicMaterial(this.pack, window.g_viewInfo, [.45, .9, .9, 1]), 
+		10, // width
+		10, // depth
+ 		1, // Number of meridians.
+ 		1)
+	transform = this.pack.createObject('Transform')
+	transform.addShape(groundplane)
+	transform.translate([0,ground,0])
+	transform.parent = g_client.root;
+
+	this.addDBall = function(size, pos, ori, nom, shape){
 		///	if no o3d primitive specified, create one:
 		this.world.addDBall(size, pos, ori, nom)
-		ball = this.world.dynamics[this.world.dynamics.length-1]	///	get the ball we just made
-		if (shape==undefined) {
-			debug("g_viewInfo: " + window.g_viewInfo,4)
+		ball = this.world.dynamics[this.world.dynamics.length - 1] ///	get the ball we just made
+		if (shape == undefined) {
+			debug("g_viewInfo: " + window.g_viewInfo, 4)
 			this.shape = o3djs.primitives.createSphere(
-	            this.pack,
-    	        o3djs.material.createBasicMaterial(this.pack, window.g_viewInfo, [1,0,0,1]),
-        	    size,     // Radius of the sphere.
-            	30,        // Number of meridians.
-            	20)
+				this.pack, 
+				o3djs.material.createBasicMaterial(this.pack, window.g_viewInfo, 
+				[1, 0, 0, 1]), 
+				size, // Radius of the sphere.
+ 				30, // Number of meridians.
+ 				20)
 		}
-        ball.o3d_transform = this.pack.createObject('Transform')
-        ball.o3d_transform.addShape(this.shape)
-        ball.o3d_transform.translate(pos)
+		ball.o3d_transform = this.pack.createObject('Transform')
+		ball.o3d_transform.addShape(this.shape)
+		ball.o3d_transform.translate(pos)
 		///	need to do rotation
-        ball.o3d_transform.parent = g_client.root;
+		ball.o3d_transform.parent = g_client.root;
 	}
 	
-	this.step = function(steps) {
+	this.step = function(steps){
 		this.world.step(steps)
 		for (var j = 0; j < this.world.dynamics.length; j++) {
 			obj = this.world.dynamics[j]
 			debug("debug B: " + obj.pos)
-//			window.g_transformArray[1].identity()
-//			window.g_transformArray[1].translate(obj.pos)
+			//			window.g_transformArray[1].identity()
+			//			window.g_transformArray[1].translate(obj.pos)
 			obj.o3d_transform.identity()
 			obj.o3d_transform.translate(obj.pos)
 			/// FIXME: orientation!
