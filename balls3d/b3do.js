@@ -104,7 +104,6 @@ b3do.world = function(gravity, timestep, ground){
 		this.world.step(steps)
 		for (var j = 0; j < this.world.dynamics.length; j++) {
 			obj = this.world.dynamics[j]
-			debug("debug B: " + obj.pos)
 			//			window.g_transformArray[1].identity()
 			//			window.g_transformArray[1].translate(obj.pos)
 			obj.o3d_transform.identity()
@@ -124,12 +123,12 @@ b3do.run = function(cb) {
     o3djs.util.setMainEngine(o3djs.util.Engine.V8)
 
     o3djs.util.makeClients(b3do_main)
-	g_client.setRenderCallback(onrender)
 }
-bugg=0
+
+g_rendered_frames=0
 function onrender(ev) {
-	bugg++
-	debug("onrender: "+bugg,0)
+	g_rendered_frames++
+	debug("onrender frame: "+g_rendered_frames,5)
 }
 
 /**
@@ -143,8 +142,8 @@ function b3do_main(clientElements) {
     // Set up the view and projection transformations.
     initContext()
 
-    // Add the shapes to the transform heirarchy.
-//    createShapes()
+	// Set up render callback
+	g_client.setRenderCallback(onrender)
 	
 	g_cb()
 }
