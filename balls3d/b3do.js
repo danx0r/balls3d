@@ -61,6 +61,7 @@ function setCamera() {
 
 b3do.world = function(gravity, timestep, ground){
 	// Init global variables.
+	this.running = false
 	debug("g_pack: " + g_pack)
 	this.pack = g_pack
 	
@@ -79,6 +80,14 @@ b3do.world = function(gravity, timestep, ground){
 	transform.translate([0,ground,0])
 	transform.parent = g_client.root;
 
+	this.start = function () {
+		this.running = true
+	}
+	
+	this.pause = function () {
+		this.running = false
+	}
+		
 	this.addDBall = function(size, pos, ori, nom, shape){
 		///	if no o3d primitive specified, create one:
 		this.world.addDBall(size, pos, ori, nom)
@@ -101,16 +110,20 @@ b3do.world = function(gravity, timestep, ground){
 	}
 	
 	this.step = function(steps){
-		this.world.step(steps)
-		for (var j = 0; j < this.world.dynamics.length; j++) {
-			obj = this.world.dynamics[j]
-			//			window.g_transformArray[1].identity()
-			//			window.g_transformArray[1].translate(obj.pos)
-			obj.o3d_transform.identity()
-			obj.o3d_transform.translate(obj.pos)
+		if (this.running) {
+			this.world.step(steps)
+			for (var j = 0; j < this.world.dynamics.length; j++) {
+				obj = this.world.dynamics[j]
+				//			window.g_transformArray[1].identity()
+				//			window.g_transformArray[1].translate(obj.pos)
+				obj.o3d_transform.identity()
+				obj.o3d_transform.translate(obj.pos)
 			/// FIXME: orientation!
+			}
 		}
 	}
+	// add us to the worlds to render
+	g_worlds.push(this)
 }
 
 // main entry point:
@@ -126,9 +139,13 @@ b3do.run = function(cb) {
 }
 
 g_rendered_frames=0
+g_worlds=[]
 function onrender(ev) {
 	g_rendered_frames++
 	debug("onrender frame: "+g_rendered_frames,5)
+	for(var i in g_worlds) {
+		g_worlds[i].step()
+	}
 }
 
 /**
@@ -144,7 +161,6 @@ function b3do_main(clientElements) {
 
 	// Set up render callback
 	g_client.setRenderCallback(onrender)
-	
 	g_cb()
 }
 

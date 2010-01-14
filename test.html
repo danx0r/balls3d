@@ -65,7 +65,10 @@ function keyPressedCallback(event) {
     	g_eyePosition[1] -= 0.5
         break
     case '.':					// page down
-		g_world.step()
+    	if (g_world.running)
+			g_world.pause()
+		else
+			g_world.start()
         break
     }
     setCamera()
