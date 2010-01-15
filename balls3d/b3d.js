@@ -59,7 +59,7 @@ b3d.world = function (gravity, timestep, ground) {
 				else {
 					obj.vel[1] += this.gravity
 				}
-				console.log("tick,"+this.tick+",pos,"+obj.pos[1]+",vel,"+obj.vel[1]+",next,"+(obj.vel[1]+this.gravity))
+//				console.log("tick,"+this.tick+",pos,"+obj.pos[1]+",vel,"+obj.vel[1]+",next,"+(obj.vel[1]+this.gravity))
 			}
 			this.tick++
 		}
