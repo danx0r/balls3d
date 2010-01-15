@@ -107,6 +107,8 @@ b3d.world = function (gravity, timestep, ground) {
 							/// here comes that momentous exchange I've been blogging about
 							b2.vel = V3.mul(b2.vel, n)
 							obj.vel = V3.mul(obj.vel, V3.mul(n, -1))
+							collision = true
+							break
 						}
 					}
 					///	if no collisions, do gravity (otherwise bad things!)
