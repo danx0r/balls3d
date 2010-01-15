@@ -50,14 +50,16 @@ b3d.world = function (gravity, timestep, ground) {
 			for(var j=0; j<this.dynamics.length; j++) {
 				obj = this.dynamics[j]
 				debug("stepping " + obj.name,6)
-				obj.vel[1] += this.gravity
 				obj.pos[0] += obj.vel[0]; obj.pos[1] += obj.vel[1]; obj.pos[2] += obj.vel[2]
-				if (obj.pos[1]-obj.size < this.ground) {
+				if (obj.pos[1] - obj.size < this.ground) {
 					if (obj.vel[1] < 0) {
 						obj.vel[1] = -obj.vel[1] * obj.damping
 					}
 				}
-				console.log("tick,"+this.tick+",pos,"+obj.pos[1]+",vel,"+obj.vel[1])
+				else {
+					obj.vel[1] += this.gravity
+				}
+				console.log("tick,"+this.tick+",pos,"+obj.pos[1]+",vel,"+obj.vel[1]+",next,"+(obj.vel[1]+this.gravity))
 			}
 			this.tick++
 		}
