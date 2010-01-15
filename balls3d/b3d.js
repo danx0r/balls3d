@@ -22,6 +22,16 @@ V3.normalize = function(v){
 	return [v[0] * di, v[1] * di, v[2] * di]
 }
 
+/// add vector3 as array
+V3.add = function(v1, v2){
+	return [v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]]
+}
+
+/// average vector3 as array
+V3.avg = function(v1, v2){
+	return [(v1[0] + v2[0]) * .5, (v1[1] + v2[1]) * .5, (v1[2] + v2[2]) * .5]
+}
+
 /// subtract vector3 as array
 V3.sub = function(v1, v2){
 	return [v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]]
@@ -104,9 +114,20 @@ b3d.world = function (gravity, timestep, ground) {
 					for (var k=j+1; k<this.dynamics.length; k++) {
 						b2 = this.dynamics[k]
 						if (n=obj.touchesBall(b2)) {
+							
 							/// here comes that momentous exchange I've been blogging about
-							b2.vel = V3.mul(b2.vel, n)
-							obj.vel = V3.mul(obj.vel, V3.mul(n, -1))
+							console.log("ball2ball,"+n)							
+							v1 = obj.vel
+							v2 = b2.vel
+							va = V3.avg(v1, v2)					// this is the mutual ref frame
+							v1_ = V3.add(v1, va)				// v1 in ref frame
+							v2_ = V3.add(v2, va)				// v2 likewise
+							v1_ = V3.mul(v1_, V3.mul(n, -1))	// bounce off plane perp to normal
+							v2_ = V3.mul(v2_, n)				// likewise
+							v1 = V3.sub(v1_, va)				// revert to zero ref frame
+							v2 = V3.sub(v2_, va)				// ditto
+							obj.vel = v1
+							b2.vel = v2
 							collision = true
 							break
 						}
