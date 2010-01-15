@@ -19,6 +19,12 @@ var g_eyePosition = [0, 3, 20]
 var g_target = [0, 3, 19]
 var g_camAngleY = 0
 
+///	turn an 'ori' parameter into a quaternion
+/// it might be one already, or else it's an [axis,degree]
+b3do.ori2quat = function (ori) {
+	if (ori.length==4) return ori
+	return o3djs.quaternions.axisRotation(ori[0],ori[1]*0.0174532925)
+}
 
 // move camera in direction it's looking
 function moveCamera(d) {
@@ -86,7 +92,7 @@ b3do.world = function(gravity, timestep, ground){
 	
 	this.addDBall = function(size, pos, ori, nom, shape, bounce){
 		///	if no o3d primitive specified, create one:
-		this.world.addDBall(size, pos, ori, nom, bounce)
+		this.world.addDBall(size, pos, b3do.ori2quat(ori), nom, bounce)
 		ball = this.world.dynamics[this.world.dynamics.length - 1] ///	get the ball we just made
 		if (shape == undefined) {
 			debug("g_viewInfo: " + window.g_viewInfo, 4)
@@ -107,6 +113,7 @@ b3do.world = function(gravity, timestep, ground){
 	}
 
 	this.addSBox = function(size, pos, ori, nom, shape, bounce){
+		ori = b3do.ori2quat(ori)
 		this.world.addSBox(size, pos, ori, nom, bounce)
 		box = this.world.statics[this.world.statics.length - 1]
 		debug("addSBox: "+box)
@@ -116,6 +123,7 @@ b3do.world = function(gravity, timestep, ground){
 		box.o3d_transform = this.pack.createObject('Transform')
 		box.o3d_transform.addShape(this.shape)
 		box.o3d_transform.translate(pos)
+		box.o3d_transform.quaternionRotate(ori)
 		///	need to do rotation
 		box.o3d_transform.parent = g_client.root;
 		return box

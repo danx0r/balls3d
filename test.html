@@ -15,6 +15,7 @@ o3djs.require('o3djs.math')
 o3djs.require('o3djs.rendergraph')
 o3djs.require('o3djs.primitives')
 o3djs.require('o3djs.material')
+o3djs.require('o3djs.quaternions')
 
 function debug(s, l){
 	if (l === undefined) {
@@ -89,7 +90,7 @@ function main2(){
 	g_world = new b3do.world(-10.0, 0.01, 0)
 	g_b1 = g_world.addDBall(.5, [-1, 2, 0], [0, 0, 0, 1])
 	g_b2 = g_world.addDBall(.5, [1, 3, 0], [0, 0, 0, 1],undefined,undefined,.5)
-	g_bx1 = g_world.addSBox([1,2,3], [-2, 3, 0], [0, 0, 0, 1])
+	g_bx1 = g_world.addSBox([1,2,3], [0, 3, 0], [[1, 0, 0], -80])
 	debug("g_world: " + g_world + " gravity: " + g_world.world.gravity, 1)
 	debug("dynamics[0].pos: " + g_world.world.dynamics[0], 3)
 }
