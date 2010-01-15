@@ -40,30 +40,30 @@ function keyPressedCallback(event) {
     var mat=g_viewInfo.drawContext.view
     switch(keyChar) {
     case '%':					//	left
-    	turnCamera(0.05)
+    	b3do.turnCamera(0.05)
         break
     case "'":					// right
-    	turnCamera(-0.05)
+    	b3do.turnCamera(-0.05)
         break
     case '&':					// up (forward)
     case 'w':
-    	moveCamera(0.4)
+    	b3do.moveCamera(0.4)
         break
     case '(':					// down (backward)
     case 's':
-    	moveCamera(-0.5)
+    	b3do.moveCamera(-0.5)
         break
     case 'a':					// up (forward)
-    	slideCamera(0.5)
+    	b3do.slideCamera(0.5)
         break
     case 'd':					// down (backward)
-    	slideCamera(-0.5)
+    	b3do.slideCamera(-0.5)
         break
     case '!':					// page up
-    	g_eyePosition[1] += 0.5
+    	b3do.raiseCamera(0.5)
         break
     case '"':					// page down
-    	g_eyePosition[1] -= 0.5
+    	b3do.raiseCamera(-0.5)
         break
     case '.':					//
     	if (g_world.is_running())
@@ -76,8 +76,6 @@ function keyPressedCallback(event) {
 		g_b2.pos=[1,4,0]
         break
     }
-    setCamera()
-//    debugh("key pressed-->" + keyChar + "<--")
 	debug("key pressed-->" + keyChar + "<-- code: " + o3djs.event.getEventKeyChar(event) + " shift: "+event.shiftKey,1)
 }
 

@@ -27,30 +27,38 @@ b3do.ori2quat = function (ori) {
 }
 
 // move camera in direction it's looking
-function moveCamera(d) {
+b3do.moveCamera = function (d) {
 	var dx=Math.sin(g_camAngleY)
 	var dz=Math.cos(g_camAngleY)
 	g_eyePosition[0] -= dx*d
 	g_eyePosition[2] -= dz*d
-	setCamera()
+	b3do.setCamera()
 }
 
 // move camera in direction perpendicular to where it's looking
-function slideCamera(d) {
+b3do.slideCamera = function (d) {
 	var dx=Math.sin(g_camAngleY+Math.PI*.5)
 	var dz=Math.cos(g_camAngleY+Math.PI*.5)
 	g_eyePosition[0] -= dx*d
 	g_eyePosition[2] -= dz*d
-	setCamera()
+	b3do.setCamera()
 }
 
 // pan camera about Y (up) axis
-function turnCamera(d) {
+b3do.turnCamera = function (d) {
 	g_camAngleY += d
+	b3do.setCamera()
+}
+
+// raise/lower camera
+b3do.raiseCamera = function (d) {
+	g_eyePosition[1] += d
+	g_target[1] += d
+	b3do.setCamera()
 }
 
 // compute camera target as offset from eye position given camera angle, and set view
-function setCamera() {
+b3do.setCamera = function () {
 	var dx=Math.sin(g_camAngleY)
 	var dz=Math.cos(g_camAngleY)
 	g_target = g_eyePosition.slice()
