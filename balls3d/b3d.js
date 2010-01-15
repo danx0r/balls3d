@@ -52,6 +52,27 @@ V3.dist2 = function(b1, b2) {
 	return dx*dx + dy*dy + dz*dz
 }
 
+V3.dist = function(v1, v2){
+	return Math.pow(V3.dist2(v1, v2), .5)
+}
+
+V3.dot = function(v1, v2){
+	return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2])
+}
+
+V3.length = function(v){
+	return Math.pow((v[0] * v[0] + v[1] * v[1] + v[2] * v[2]), .5)
+}
+
+/// cos of angle between 2 vectors (sw33t)
+V3.cos = function(v1, v2){
+	l1 = V3.length(v1)
+	l2 = V3.length(v2)
+	dot = V3.dot(v1, v2)
+	cos = dot / (l1 * l2)
+	return cos
+}
+
 b3d.sBox = function(size, pos, ori, nom, bounce){
 	this.size = size
 	this.pos = pos
@@ -78,7 +99,7 @@ b3d.dBall = function(size, pos, ori, nom, bounce){
 		debug("touchesBall dist2: " + V3.dist2(this.pos, b2.pos), 3)
 		if (V3.dist2(this.pos, b2.pos) > (this.size + b2.size) * (this.size + b2.size)) 
 			return false
-		return V3.normalize(V3.sub(this.pos, b2.pos))
+		return V3.normalize(V3.sub(b2.pos, this.pos))
 	}
 }
 
@@ -113,26 +134,32 @@ b3d.world = function (gravity, timestep, ground) {
 					collision = false
 					for (var k=j+1; k<this.dynamics.length; k++) {
 						b2 = this.dynamics[k]
-						if (n=obj.touchesBall(b2)) {
-							var v1,v2							
+						if (n = obj.touchesBall(b2)) {
+							var v1, v2
 							/// here comes that momentous exchange I've been blogging about
 							v1 = obj.vel
 							v2 = b2.vel
-							console.log(v1[1]+","+v2[1])
-							va = V3.avg(v1, v2)				// this is the mutual ref frame
-							v1 = V3.sub(v1, va)				// v1 in mututal frame (yes subtract)
-							v2 = V3.sub(v2, va)				// v2 likewise
-							console.log(v1[1]+","+v2[1])
-							v1 = V3.mul(v1, n)				// bounce off plane perp to normal
-							v2 = V3.mul(v2, n)				// likewise
-							console.log(v1[1]+","+v2[1])
-							v1 = V3.add(v1, va)				// revert to zero ref frame
-							v2 = V3.add(v2, va)				// ditto
-							console.log(v1[1]+","+v2[1])
+							va = V3.avg(v1, v2) // this is the mutual ref frame
+							console.log("v1," + v1 + ",v2," + v2 + ",va," + va + ",norm," + n)
+							
+							v1 = V3.sub(v1, va) // v1 in mututal frame (yes subtract)
+							v2 = V3.sub(v2, va) // v2 likewise
+							c = V3.cos(v1, n) // cos of angle between our trajectory and normal
+							d = V3.dist(v1, v2) // mutual velocity
+							e = V3.mul(n, c * d) // yup -- e==exchange vector
+							console.log("v1," + v1 + ",v2," + v2 +",c," + c + ",d," + d + ",e," + e)
+
+							v1 = V3.sub(v1, e) // bounce off plane perp to normal
+							v2 = V3.add(v2, e) // and vice versa
+							console.log("v1," + v1 + ",v2," + v2)
+							
+							v1 = V3.add(v1, va) // revert to zero ref frame
+							v2 = V3.add(v2, va) // ditto
+							console.log("v1," + v1 + ",v2," + v2)
 							obj.vel = v1
 							b2.vel = v2
+							console.log("-------")
 							collision = true
-							console.log(v1[1]+","+v2[1]+",norm,"+n[1]+",avg,"+va[1])
 							break
 						}
 					}
