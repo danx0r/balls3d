@@ -18,6 +18,8 @@ b3d.sBox = function (size, pos, ori, nom) {
 	this.size = size
 	this.pos = pos
 	this.ori = ori
+	this.lmo = [0,0,0]
+	this.damping = .9
 	this.name = nom
 }
 
@@ -25,6 +27,8 @@ b3d.dBall = function (size, pos, ori, nom) {
 	this.size = size
 	this.pos = pos
 	this.ori = ori
+	this.lmo = [0,0,0]
+	this.damping = .9
 	this.name = nom
 }
 
@@ -45,8 +49,10 @@ b3d.world = function (gravity, timestep, ground) {
 			for(var j=0; j<this.dynamics.length; j++) {
 				obj = this.dynamics[j]
 				debug("stepping " + obj.name,6)
-				if (obj.pos[1] > this.ground) {
-					obj.pos[1] += this.gravity * this.timestep
+				obj.pos[0] += obj.lmo[0]; obj.pos[1] += obj.lmo[1]; obj.pos[2] += obj.lmo[2]
+				obj.lmo[1] += this.gravity * this.timestep
+				if (obj.pos[1]-obj.size < this.ground) {
+					obj.lmo[1] = -obj.lmo[1] * obj.damping
 				}
 			}
 		}
