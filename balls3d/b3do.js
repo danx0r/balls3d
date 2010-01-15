@@ -124,7 +124,7 @@ b3do.world = function(gravity, timestep, ground){
 				obj.o3d_transform.translate(obj.pos)
 			/// FIXME: orientation!
 			}
-			//debug("step elapsed: "+elapsed+" actual: "+this.actualTime+" stepped: "+this.steppedTime+" steps: "+stepsTaken)
+			//console.log("step elapsed: "+elapsed+" actual: "+this.actualTime+" stepped: "+this.steppedTime+" steps: "+stepsTaken)
 		}
 	}
 	// add us to the worlds to render

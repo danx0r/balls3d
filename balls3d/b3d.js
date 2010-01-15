@@ -18,7 +18,7 @@ b3d.sBox = function (size, pos, ori, nom) {
 	this.size = size
 	this.pos = pos
 	this.ori = ori
-	this.lmo = [0,0,0]
+	this.vel = [0,0,0]
 	this.damping = .9
 	this.name = nom
 }
@@ -27,7 +27,7 @@ b3d.dBall = function (size, pos, ori, nom) {
 	this.size = size
 	this.pos = pos
 	this.ori = ori
-	this.lmo = [0,0,0]
+	this.vel = [0,0,0]		// in meters/timestep
 	this.damping = .9
 	this.name = nom
 }
@@ -37,7 +37,7 @@ b3d.world = function (gravity, timestep, ground) {
 	if(timestep===undefined) timestep = 0.01
 	if(ground===undefined) ground = 0
     debug("Initializing b3d gravity="+gravity + " timestep=" + timestep + " ground=" + ground,0)
-    this.gravity = gravity
+    this.gravity = gravity * timestep*timestep // in meters/timestep**2
     this.timestep = timestep
     this.ground = ground
     this.statics = []
@@ -49,10 +49,10 @@ b3d.world = function (gravity, timestep, ground) {
 			for(var j=0; j<this.dynamics.length; j++) {
 				obj = this.dynamics[j]
 				debug("stepping " + obj.name,6)
-				obj.pos[0] += obj.lmo[0]; obj.pos[1] += obj.lmo[1]; obj.pos[2] += obj.lmo[2]
-				obj.lmo[1] += this.gravity * this.timestep
+				obj.pos[0] += obj.vel[0]; obj.pos[1] += obj.vel[1]; obj.pos[2] += obj.vel[2]
+				obj.vel[1] += this.gravity
 				if (obj.pos[1]-obj.size < this.ground) {
-					obj.lmo[1] = -obj.lmo[1] * obj.damping
+					obj.vel[1] = -obj.vel[1] * obj.damping
 				}
 			}
 		}
