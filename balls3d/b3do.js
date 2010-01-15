@@ -106,6 +106,21 @@ b3do.world = function(gravity, timestep, ground){
 		return ball
 	}
 
+	this.addSBox = function(size, pos, ori, nom, shape, bounce){
+		this.world.addSBox(size, pos, ori, nom, bounce)
+		box = this.world.statics[this.world.statics.length - 1]
+		debug("addSBox: "+box)
+		if (shape == undefined) {
+			this.shape = o3djs.primitives.createBox(this.pack, o3djs.material.createBasicMaterial(this.pack, window.g_viewInfo, [0, 1, 0, 1]), size[0], size[1], size[2])
+		}
+		box.o3d_transform = this.pack.createObject('Transform')
+		box.o3d_transform.addShape(this.shape)
+		box.o3d_transform.translate(pos)
+		///	need to do rotation
+		box.o3d_transform.parent = g_client.root;
+		return box
+	}
+
 	this.actualTime = 0.0
 	this.steppedTime = 0.0
 	this.step = function(elapsed){

@@ -14,12 +14,13 @@ API:
 
 var b3d = b3d || {};
 
-b3d.sBox = function (size, pos, ori, nom) {
+b3d.sBox = function (size, pos, ori, nom, bounce) {
 	this.size = size
 	this.pos = pos
 	this.ori = ori
 	this.vel = [0,0,0]
-	this.damping = .9
+	if (bounce===undefined) bounce=.7
+	this.damping = bounce
 	this.name = nom
 }
 
@@ -66,9 +67,9 @@ b3d.world = function (gravity, timestep, ground) {
 		}
 	}
 
-	this.addSBox = function(size, pos, ori, nom) {
+	this.addSBox = function(size, pos, ori, nom, bounce) {
 		if (nom===undefined) nom="box" + this.statics.length
-		this.statics.push(b3d.sBox(size, pos, ori, nom)) 
+		this.statics.push(new b3d.sBox(size, pos, ori, nom, bounce))
 	}
 
 	this.addDBall = function(size, pos, ori, nom, bounce) {
