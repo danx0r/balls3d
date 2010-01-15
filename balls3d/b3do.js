@@ -6,6 +6,13 @@ b3d o3d wrapper
 
 */
 
+o3djs.require('o3djs.util');
+o3djs.require('o3djs.math')
+o3djs.require('o3djs.rendergraph')
+o3djs.require('o3djs.primitives')
+o3djs.require('o3djs.material')
+o3djs.require('o3djs.quaternions')
+
 var b3do = b3do || {};
 
 // global variables
