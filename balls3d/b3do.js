@@ -185,7 +185,7 @@ g_rendered_frames=0
 g_worlds=[]
 function onrender(ev) {
 	g_rendered_frames++
-	debug("onrender frame: "+g_rendered_frames + " elapsed: " + ev.elapsedTime,5)
+//	debug("onrender frame: "+g_rendered_frames + " elapsed: " + ev.elapsedTime,5)
 	for(var i in g_worlds) {
 		g_worlds[i].step(ev.elapsedTime)
 	}
