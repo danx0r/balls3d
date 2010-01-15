@@ -119,11 +119,11 @@ b3d.world = function (gravity, timestep, ground) {
 							v1 = obj.vel
 							v2 = b2.vel
 							console.log(v1[1]+","+v2[1])
-							va = V3.avg(v1, v2)					// this is the mutual ref frame
+							va = V3.avg(v1, v2)				// this is the mutual ref frame
 							v1 = V3.sub(v1, va)				// v1 in mututal frame (yes subtract)
 							v2 = V3.sub(v2, va)				// v2 likewise
 							console.log(v1[1]+","+v2[1])
-							v1 = V3.mul(v1, V3.mul(n, -1))	// bounce off plane perp to normal
+							v1 = V3.mul(v1, n)				// bounce off plane perp to normal
 							v2 = V3.mul(v2, n)				// likewise
 							console.log(v1[1]+","+v2[1])
 							v1 = V3.add(v1, va)				// revert to zero ref frame
