@@ -28,7 +28,7 @@ b3d.dBall = function (size, pos, ori, nom) {
 	this.pos = pos
 	this.ori = ori
 	this.vel = [0,0,0]		// in meters/timestep
-	this.damping = .9
+	this.damping = .7
 	this.name = nom
 }
 
@@ -42,6 +42,7 @@ b3d.world = function (gravity, timestep, ground) {
     this.ground = ground
     this.statics = []
     this.dynamics = []
+	this.tick=0
 
 	this.step = function(steps) {
 		if (steps==undefined) steps = 1
@@ -49,12 +50,16 @@ b3d.world = function (gravity, timestep, ground) {
 			for(var j=0; j<this.dynamics.length; j++) {
 				obj = this.dynamics[j]
 				debug("stepping " + obj.name,6)
-				obj.pos[0] += obj.vel[0]; obj.pos[1] += obj.vel[1]; obj.pos[2] += obj.vel[2]
 				obj.vel[1] += this.gravity
+				obj.pos[0] += obj.vel[0]; obj.pos[1] += obj.vel[1]; obj.pos[2] += obj.vel[2]
 				if (obj.pos[1]-obj.size < this.ground) {
-					obj.vel[1] = -obj.vel[1] * obj.damping
+					if (obj.vel[1] < 0) {
+						obj.vel[1] = -obj.vel[1] * obj.damping
+					}
 				}
+				console.log("tick,"+this.tick+",pos,"+obj.pos[1]+",vel,"+obj.vel[1])
 			}
+			this.tick++
 		}
 	}
 
