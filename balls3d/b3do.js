@@ -139,7 +139,6 @@ b3do.world = function(gravity, timestep, ground){
 		box.o3d_transform.addShape(this.shape)
 		box.o3d_transform.translate(pos)
 		box.o3d_transform.quaternionRotate(ori)
-		///	need to do rotation
 		box.o3d_transform.parent = g_client.root;
 		return box
 	}
@@ -150,20 +149,20 @@ b3do.world = function(gravity, timestep, ground){
 		if (this.running) {
 			var stepsTaken = 0
 			this.actualTime += elapsed
-			while (this.steppedTime+this.world.timestep < this.actualTime) {
+			while (this.steppedTime + this.world.timestep < this.actualTime) {
 				this.world.step()
 				this.steppedTime += this.world.timestep
 				stepsTaken++
 			}
-			for (var j = 0; j < this.world.dynamics.length; j++) {
-				obj = this.world.dynamics[j]
-				//			window.g_transformArray[1].identity()
-				//			window.g_transformArray[1].translate(obj.pos)
-				obj.o3d_transform.identity()
-				obj.o3d_transform.translate(obj.pos)
-			/// FIXME: orientation!
-			}
-			//console.log("step elapsed: "+elapsed+" actual: "+this.actualTime+" stepped: "+this.steppedTime+" steps: "+stepsTaken)
+		//console.log("step elapsed: "+elapsed+" actual: "+this.actualTime+" stepped: "+this.steppedTime+" steps: "+stepsTaken)
+		}
+		for (var j = 0; j < this.world.dynamics.length; j++) {
+			obj = this.world.dynamics[j]
+			//			window.g_transformArray[1].identity()
+			//			window.g_transformArray[1].translate(obj.pos)
+			obj.o3d_transform.identity()
+			obj.o3d_transform.translate(obj.pos)
+		/// FIXME: orientation!
 		}
 	}
 	// add us to the worlds to render

@@ -14,6 +14,21 @@ API:
 
 var b3d = b3d || {};
 
+/// return distance squared
+b3d.dist2 = function(b1, b2) {
+	var dx = b1.pos[0]-b2.pos[0]
+	var dy = b1.pos[1]-b2.pos[1]
+	var dz = b1.pos[2]-b2.pos[2]
+	return dx*dx + dy*dy + dz*dz
+}
+
+///	normalize a vector3 (as array); this is probably piss-slow -- use o3d?
+b3d.normalize = function(v){
+	d2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2]
+	di = 1.0 / Math.pow(d2, .5)
+	return [v[0] * di, v[1] * di, v[2] * di]
+}
+
 b3d.sBox = function (size, pos, ori, nom, bounce) {
 	this.size = size
 	this.pos = pos
@@ -25,13 +40,20 @@ b3d.sBox = function (size, pos, ori, nom, bounce) {
 }
 
 b3d.dBall = function (size, pos, ori, nom, bounce) {
-	this.size = size
+	this.size = size								//	radius
 	this.pos = pos
 	this.ori = ori
-	this.vel = [0,0,0]		// in meters/timestep
+	this.vel = [0,0,0]								// in meters/timestep
 	if (bounce===undefined) bounce=.7
 	this.damping = bounce
 	this.name = nom
+	
+	/// check for collision with another ball. return false, or normal (vector pointing from this to b2)
+	this.touchesBall = function(b2){
+		debug("touchesBall dist2: "+b3d.dist2(this, b2),3)
+		if (b3d.dist2(this, b2) > (this.size+b2.size)*(this.size+b2.size)) return false
+		return true
+	}
 }
 
 b3d.world = function (gravity, timestep, ground) {
@@ -45,6 +67,8 @@ b3d.world = function (gravity, timestep, ground) {
     this.statics = []
     this.dynamics = []
 	this.tick=0
+	
+	debug("normalize: "+b3d.normalize([1,2,3]))
 
 	this.step = function(steps) {
 		if (steps==undefined) steps = 1
