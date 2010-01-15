@@ -84,9 +84,9 @@ b3do.world = function(gravity, timestep, ground){
 	this.pause = function () {this.running = false}
 	this.is_running = function () {return this.running}
 	
-	this.addDBall = function(size, pos, ori, nom, shape){
+	this.addDBall = function(size, pos, ori, nom, shape, bounce){
 		///	if no o3d primitive specified, create one:
-		this.world.addDBall(size, pos, ori, nom)
+		this.world.addDBall(size, pos, ori, nom, bounce)
 		ball = this.world.dynamics[this.world.dynamics.length - 1] ///	get the ball we just made
 		if (shape == undefined) {
 			debug("g_viewInfo: " + window.g_viewInfo, 4)
@@ -103,6 +103,7 @@ b3do.world = function(gravity, timestep, ground){
 		ball.o3d_transform.translate(pos)
 		///	need to do rotation
 		ball.o3d_transform.parent = g_client.root;
+		return ball
 	}
 
 	this.actualTime = 0.0

@@ -23,12 +23,13 @@ b3d.sBox = function (size, pos, ori, nom) {
 	this.name = nom
 }
 
-b3d.dBall = function (size, pos, ori, nom) {
+b3d.dBall = function (size, pos, ori, nom, bounce) {
 	this.size = size
 	this.pos = pos
 	this.ori = ori
 	this.vel = [0,0,0]		// in meters/timestep
-	this.damping = .7
+	if (bounce===undefined) bounce=.7
+	this.damping = bounce
 	this.name = nom
 }
 
@@ -70,9 +71,9 @@ b3d.world = function (gravity, timestep, ground) {
 		this.statics.push(b3d.sBox(size, pos, ori, nom)) 
 	}
 
-	this.addDBall = function(size, pos, ori, nom) {
+	this.addDBall = function(size, pos, ori, nom, bounce) {
 		if (nom===undefined) nom="ball" + this.statics.length
-		this.dynamics.push(new b3d.dBall(size, pos, ori, nom)) 
+		this.dynamics.push(new b3d.dBall(size, pos, ori, nom, bounce)) 
 	}
 
 }
