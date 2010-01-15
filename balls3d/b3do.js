@@ -240,15 +240,3 @@ function initContext() {
             g_target,        // target
             [0, 1, 0])    // up
 }
-
-/**
- * Creates a material based on the given single color.
- * @param {!o3djs.math.Vector4} baseColor A 4-component vector with
- *         the R,G,B, and A components of a color.
- * @return {!o3d.Material} A phong material whose overall pigment is
- *         baseColor.
- */
-function createMaterial(baseColor) {
-    // Create a new, empty Material object.
-    return o3djs.material.createBasicMaterial(g_pack, g_viewInfo, baseColor)
-}
