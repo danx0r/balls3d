@@ -13,46 +13,62 @@ API:
 */
 
 var b3d = b3d || {};
-
-/// return distance squared
-b3d.dist2 = function(b1, b2) {
-	var dx = b1.pos[0]-b2.pos[0]
-	var dy = b1.pos[1]-b2.pos[1]
-	var dz = b1.pos[2]-b2.pos[2]
-	return dx*dx + dy*dy + dz*dz
-}
+var V3 = V3 || {}
 
 ///	normalize a vector3 (as array); this is probably piss-slow -- use o3d?
-b3d.normalize = function(v){
+V3.normalize = function(v){
 	d2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2]
 	di = 1.0 / Math.pow(d2, .5)
 	return [v[0] * di, v[1] * di, v[2] * di]
 }
 
-b3d.sBox = function (size, pos, ori, nom, bounce) {
+/// subtract vector3 as array
+V3.sub = function(v1, v2){
+	return [v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]]
+}
+
+/// mul vector3 as array (2nd can be scalar)
+V3.mul = function(v1, v2){
+	if (v2.length == 3) 
+		return [v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2]]
+	return [v1[0] * v2, v1[1] * v2, v1[2] * v2]
+}
+
+/// return distance squared
+V3.dist2 = function(b1, b2) {
+	var dx = b1[0]-b2[0]
+	var dy = b1[1]-b2[1]
+	var dz = b1[2]-b2[2]
+	return dx*dx + dy*dy + dz*dz
+}
+
+b3d.sBox = function(size, pos, ori, nom, bounce){
 	this.size = size
 	this.pos = pos
 	this.ori = ori
-	this.vel = [0,0,0]
-	if (bounce===undefined) bounce=.7
+	this.vel = [0, 0, 0]
+	if (bounce === undefined) 
+		bounce = .7
 	this.damping = bounce
 	this.name = nom
 }
 
-b3d.dBall = function (size, pos, ori, nom, bounce) {
-	this.size = size								//	radius
+b3d.dBall = function(size, pos, ori, nom, bounce){
+	this.size = size //	radius
 	this.pos = pos
 	this.ori = ori
-	this.vel = [0,0,0]								// in meters/timestep
-	if (bounce===undefined) bounce=.7
+	this.vel = [0, 0, 0] // in meters/timestep
+	if (bounce === undefined) 
+		bounce = .7
 	this.damping = bounce
 	this.name = nom
 	
-	/// check for collision with another ball. return false, or normal (vector pointing from this to b2)
+	/// check for collision with another ball. return false, or normal (normalized vector pointing from this to b2)
 	this.touchesBall = function(b2){
-		debug("touchesBall dist2: "+b3d.dist2(this, b2),3)
-		if (b3d.dist2(this, b2) > (this.size+b2.size)*(this.size+b2.size)) return false
-		return true
+		debug("touchesBall dist2: " + V3.dist2(this.pos, b2.pos), 3)
+		if (V3.dist2(this.pos, b2.pos) > (this.size + b2.size) * (this.size + b2.size)) 
+			return false
+		return V3.normalize(V3.sub(this.pos, b2.pos))
 	}
 }
 
@@ -68,8 +84,6 @@ b3d.world = function (gravity, timestep, ground) {
     this.dynamics = []
 	this.tick=0
 	
-	debug("normalize: "+b3d.normalize([1,2,3]))
-
 	this.step = function(steps) {
 		if (steps==undefined) steps = 1
 		for(var i=0; i<steps; i++) {
@@ -77,13 +91,28 @@ b3d.world = function (gravity, timestep, ground) {
 				obj = this.dynamics[j]
 				debug("stepping " + obj.name,6)
 				obj.pos[0] += obj.vel[0]; obj.pos[1] += obj.vel[1]; obj.pos[2] += obj.vel[2]
+				
+				/// check collision obj--ground
 				if (obj.pos[1] - obj.size < this.ground) {
 					if (obj.vel[1] < 0) {
 						obj.vel[1] = -obj.vel[1] * obj.damping
 					}
 				}
 				else {
-					obj.vel[1] += this.gravity
+					///	check against other dynamic objects
+					collision = false
+					for (var k=j+1; k<this.dynamics.length; k++) {
+						b2 = this.dynamics[k]
+						if (n=obj.touchesBall(b2)) {
+							/// here comes that momentous exchange I've been blogging about
+							b2.vel = V3.mul(b2.vel, n)
+							obj.vel = V3.mul(obj.vel, V3.mul(n, -1))
+						}
+					}
+					///	if no collisions, do gravity (otherwise bad things!)
+					if (collision==false) {
+						obj.vel[1] += this.gravity
+					}
 				}
 //				console.log("tick,"+this.tick+",pos,"+obj.pos[1]+",vel,"+obj.vel[1]+",next,"+(obj.vel[1]+this.gravity))
 			}
